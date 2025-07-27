@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CoverX Insurance</title>
+  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+</head>
+<body>
+  <h2>CoverX – Crypto Transaction Insurance</h2>
+
+  <button onclick="connectWallet()">Connect Wallet</button>
+  <br><br>
+
+  <input type="text" id="recipient" placeholder="Recipient Address" />
+  <input type="number" id="amount" placeholder="Amount (ETH)" />
+  <button onclick="send()">Send with Insurance</button>
+
+  <p id="status"></p>
+
+  <script src="script.js"></script>
+</body>
+</html>
