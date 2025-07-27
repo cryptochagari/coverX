@@ -3,23 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CoverX Insurance</title>
-  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
-  <script defer src="script.js"></script>
+  <title>CoverX Crypto Insurance</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
 </head>
 <body>
-  <h1>CoverX Crypto Insurance</h1>
+  <div class="container">
+    <h1>CoverX Crypto Insurance</h1>
+    
+    <button id="connectBtn" onclick="connectWallet()">Connect Wallet</button>
+    <p id="walletAddress" class="info"></p>
 
-  <button id="connectButton">Connect Wallet</button>
-  <p id="walletAddress"></p>
+    <div class="form">
+      <h3>Send Insured Crypto</h3>
+      <input type="text" id="recipient" placeholder="Recipient Address" />
+      <input type="number" id="amount" placeholder="Amount in ETH" />
+      <button onclick="sendWithInsurance()">Send with CoverX</button>
+    </div>
 
-  <button id="registerButton">Register as CoverX Member</button>
+    <p id="status" class="info"></p>
+  </div>
 
-  <h3>Send Insured Crypto</h3>
-  <input type="text" id="recipient" placeholder="Recipient Address" />
-  <input type="number" id="amount" placeholder="Amount in ETH" />
-  <button id="sendButton">Send with Insurance</button>
-
-  <p id="status"></p>
+  <script src="app.js"></script>
 </body>
 </html>
