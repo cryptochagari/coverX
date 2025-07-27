@@ -3,118 +3,145 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CoverX Crypto Insurance</title>
+  <title>Crypto Transfer</title>
   <style>
     body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #111827;
-      color: #f3f4f6;
+      background: #0f0f0f;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       height: 100vh;
-      padding: 20px;
+      margin: 0;
     }
 
-    .card {
-      background: #1f2937;
-      border-radius: 15px;
-      padding: 30px;
-      max-width: 400px;
+    .container {
+      background: #1e1e2f;
+      padding: 2rem;
+      border-radius: 16px;
       width: 100%;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      max-width: 420px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
     }
 
     h1 {
       text-align: center;
-      margin-bottom: 20px;
-      color: #60a5fa;
+      margin-bottom: 1.5rem;
     }
 
-    input, button {
+    label {
+      display: block;
+      margin: 0.5rem 0 0.2rem;
+      font-weight: 500;
+    }
+
+    input, select, button {
       width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      margin-bottom: 20px;
-      border-radius: 10px;
+      padding: 0.6rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
       border: none;
-      font-size: 16px;
+      font-size: 1rem;
     }
 
-    input {
-      background-color: #374151;
-      color: #f9fafb;
+    input, select {
+      background: #2c2c3e;
+      color: white;
     }
 
     button {
-      background-color: #3b82f6;
+      background: #4e9cff;
       color: white;
       cursor: pointer;
-      transition: background 0.3s;
+      font-weight: bold;
+      transition: background 0.3s ease;
     }
 
     button:hover {
-      background-color: #2563eb;
+      background: #367cd9;
     }
 
     .status {
       text-align: center;
-      font-size: 14px;
-      margin-top: 10px;
+      margin-top: 1rem;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>CoverX Insurance</h1>
+  <div class="container">
+    <h1>Send Crypto</h1>
 
-    <button onclick="connectWallet()">Connect Wallet</button>
+    <button onclick="connectWallet()">🔗 Connect Wallet</button>
 
-    <input type="text" id="recipient" placeholder="Recipient Wallet Address" />
+    <label for="recipient">Recipient Address</label>
+    <input type="text" id="recipient" placeholder="0x..." />
 
-    <button onclick="sendCrypto()">Send 0.01 ETH</button>
+    <label for="crypto">Crypto Type</label>
+    <select id="crypto">
+      <option value="ETH">ETH</option>
+      <option value="USDT">USDT</option>
+      <option value="BNB">BNB</option>
+    </select>
+
+    <label for="amount">Amount</label>
+    <input type="number" id="amount" placeholder="e.g., 0.05" />
+
+    <button onclick="sendCrypto()">🚀 Send</button>
 
     <div class="status" id="status"></div>
   </div>
 
   <script>
-    async function connectWallet() {
-      if (typeof window.ethereum === 'undefined') {
-        alert('Please install MetaMask to continue.');
-        return;
-      }
+    let userAccount;
 
-      try {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        document.getElementById("status").textContent = "Connected: " + accounts[0];
-      } catch (err) {
-        document.getElementById("status").textContent = "Connection failed.";
+    async function connectWallet() {
+      if (typeof window.ethereum !== 'undefined') {
+        try {
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          userAccount = accounts[0];
+          document.getElementById('status').innerText = "Wallet Connected: " + userAccount;
+        } catch (err) {
+          document.getElementById('status').innerText = "Connection failed.";
+        }
+      } else {
+        document.getElementById('status').innerText = "Please install MetaMask.";
       }
     }
 
     async function sendCrypto() {
       const recipient = document.getElementById('recipient').value;
+      const amount = document.getElementById('amount').value;
+      const crypto = document.getElementById('crypto').value;
 
-      if (!window.ethereum || !window.ethereum.selectedAddress) {
-        alert("Please connect MetaMask first.");
+      if (!userAccount) {
+        document.getElementById('status').innerText = "Please connect wallet first.";
+        return;
+      }
+
+      if (!recipient || !amount) {
+        document.getElementById('status').innerText = "Please fill all fields.";
         return;
       }
 
       try {
-        const txHash = await window.ethereum.request({
-          method: 'eth_sendTransaction',
-          params: [{
-            from: ethereum.selectedAddress,
-            to: recipient,
-            value: '0x2386F26FC10000' // 0.01 ETH in wei
-          }]
-        });
-
-        document.getElementById("status").textContent = "Transaction sent: " + txHash;
+        if (crypto === 'ETH') {
+          const amountInWei = (parseFloat(amount) * 1e18).toString();
+          await ethereum.request({
+            method: 'eth_sendTransaction',
+            params: [{
+              from: userAccount,
+              to: recipient,
+              value: '0x' + parseInt(amountInWei).toString(16)
+            }]
+          });
+          document.getElementById('status').innerText = "✅ Transaction Sent!";
+        } else {
+          document.getElementById('status').innerText = `${crypto} sending coming soon (requires contract interaction).`;
+        }
       } catch (err) {
-        document.getElementById("status").textContent = "Transaction failed: " + err.message;
+        document.getElementById('status').innerText = "❌ Error: " + err.message;
       }
     }
   </script>
