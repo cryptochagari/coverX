@@ -3,27 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CoverX Insurance DApp</title>
-  <link rel="stylesheet" href="style.css">
+  <title>CoverX Crypto Insurance</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>CoverX Insurance</h1>
-    <button id="connectBtn">Connect Wallet</button>
-    
-    <div class="section">
-      <h2>Register Insurance</h2>
-      <input type="text" id="walletAddress" placeholder="Enter your wallet address">
-      <button onclick="registerInsurance()">Register</button>
-    </div>
+  <header>
+    <h1>CoverX</h1>
+    <p>Decentralized Crypto Insurance for Wallets & Transactions</p>
+  </header>
 
-    <div class="section">
-      <h2>Claim Status</h2>
-      <input type="text" id="claimCode" placeholder="Enter claim code">
-      <button onclick="checkClaimStatus()">Check Status</button>
-      <div id="statusResult"></div>
-    </div>
-  </div>
+  <main>
+    <section class="connect-wallet">
+      <button id="connectWallet">Connect Wallet</button>
+      <div id="walletStatus"></div>
+    </section>
+
+    <section class="insurance-options">
+      <h2>Get Insurance</h2>
+      <form id="insuranceForm">
+        <label for="walletAddress">Wallet Address:</label>
+        <input type="text" id="walletAddress" required />
+
+        <label for="coverageType">Coverage Type:</label>
+        <select id="coverageType">
+          <option value="wallet">Wallet</option>
+          <option value="transaction">Transaction</option>
+          <option value="p2p">P2P Deal</option>
+        </select>
+
+        <label for="amount">Coverage Amount (USDT):</label>
+        <input type="number" id="amount" required />
+
+        <button type="submit">Submit & Pay</button>
+      </form>
+      <div id="formMessage"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 CoverX. Insure your crypto with confidence.</p>
+  </footer>
 
   <script src="app.js"></script>
 </body>
