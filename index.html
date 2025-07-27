@@ -3,44 +3,65 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CoverX Protection</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+  <title>CoverX - Crypto Insurance</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js" defer></script>
 </head>
 <body>
-  <div class="glass-card">
-    <h2>CoverX Protection</h2>
-    <p>Connect your wallet to secure your transaction.</p>
-    <button id="connectButton">Connect Wallet</button>
+  <div class="container">
+    <h1>CoverX Insurance</h1>
+    <button id="connectWallet">Connect Wallet</button>
     <div id="walletAddress"></div>
-    <button id="sendButton" style="display:none;">Send with CoverX</button>
-    <div id="status"></div>
+    
+    <button id="sendButton">Send with CoverX</button>
+    <p id="status"></p>
   </div>
 
   <script>
-    let userAddr;
+    let userAccount;
+
+    const connectWalletBtn = document.getElementById('connectWallet');
+    const walletDisplay = document.getElementById('walletAddress');
+    const sendButton = document.getElementById('sendButton');
+    const statusText = document.getElementById('status');
 
     async function connectWallet() {
-      if (!window.ethereum) {
-        alert('MetaMask not found.');
-        return;
-      }
-      try {
-        const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-        userAddr = accounts[0];
-        document.getElementById('walletAddress').textContent = `Connected: ${userAddr}`;
-        document.getElementById('status').textContent = '✅ Registered with CoverX';
-        document.getElementById('sendButton').style.display = 'block';
-      } catch {
-        document.getElementById('status').textContent = '❌ Connection canceled.';
+      if (window.ethereum) {
+        try {
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          userAccount = accounts[0];
+          walletDisplay.innerText = `Wallet Connected: ${userAccount}`;
+          statusText.innerText = '';
+        } catch (err) {
+          statusText.innerText = 'Connection rejected.';
+        }
+      } else {
+        statusText.innerText = 'Please install MetaMask.';
       }
     }
 
-    document.getElementById('connectButton').addEventListener('click', connectWallet);
-    document.getElementById('sendButton').addEventListener('click', () => {
-      document.getElementById('status').textContent = '✅ Transaction sent with insurance (simulated).';
-    });
+    async function sendWithCoverX() {
+      if (!userAccount) {
+        statusText.innerText = 'Please connect your wallet first.';
+        return;
+      }
+
+      try {
+        const tx = await ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: userAccount,
+            to: '0x1234567890abcdef1234567890abcdef12345678', // Change to your address
+            value: '0x2386F26FC10000' // 0.01 ETH in hex
+          }]
+        });
+        statusText.innerText = `Transaction sent! Hash: ${tx}`;
+      } catch (err) {
+        statusText.innerText = `Transaction failed: ${err.message}`;
+      }
+    }
+
+    connectWalletBtn.onclick = connectWallet;
+    sendButton.onclick = sendWithCoverX;
   </script>
 </body>
 </html>
