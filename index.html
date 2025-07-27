@@ -29,3 +29,17 @@
   <script src="app.js"></script>
 </body>
 </html>
+window.addEventListener('load', async () => {
+  if (typeof window.ethereum !== 'undefined') {
+    console.log("✅ MetaMask detected");
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const userAddress = accounts[0];
+    document.getElementById('wallet-address').innerText = `Wallet: ${userAddress}`;
+
+    // Simulate automatic registration (you can expand this to call a contract)
+    console.log("📌 User registered with CoverX:", userAddress);
+
+  } else {
+    alert("❌ Please install MetaMask to use CoverX.");
+  }
+});
