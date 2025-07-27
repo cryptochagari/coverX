@@ -1,45 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CoverX Insurance DApp</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>CoverX Crypto Insurance</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
 </head>
 <body>
   <div class="container">
     <h1>CoverX Crypto Insurance</h1>
+    <button onclick="connectWallet()">Connect Wallet</button>
+    <p id="wallet-address"></p>
 
-    <button id="connectBtn">Connect Wallet</button>
-    <div id="walletAddress"></div>
+    <label>Recipient Wallet Address:</label>
+    <input type="text" id="recipient" placeholder="0x..." />
 
-    <form id="insuranceForm">
-      <label for="receiver">Recipient Wallet Address:</label>
-      <input type="text" id="receiver" required>
+    <label>Transaction Amount (ETH):</label>
+    <input type="number" id="amount" placeholder="e.g., 0.1" />
 
-      <label for="amount">Transaction Amount (ETH):</label>
-      <input type="number" id="amount" step="0.0001" required>
-
-      <button type="submit">Send with Insurance</button>
-    </form>
+    <button onclick="sendWithInsurance()">Send with Insurance</button>
 
     <p id="status"></p>
   </div>
 
-  <script src="app.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
-window.addEventListener('load', async () => {
-  if (typeof window.ethereum !== 'undefined') {
-    console.log("✅ MetaMask detected");
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-    const userAddress = accounts[0];
-    document.getElementById('wallet-address').innerText = `Wallet: ${userAddress}`;
-
-    // Simulate automatic registration (you can expand this to call a contract)
-    console.log("📌 User registered with CoverX:", userAddress);
-
-  } else {
-    alert("❌ Please install MetaMask to use CoverX.");
-  }
-});
