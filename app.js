@@ -50,3 +50,6 @@ async function registerWallet(wallet) {
   console.log(`Auto-registering wallet: ${wallet}`);
   // In production: store wallet in backend smart contract or database
 }
+function sendCoverX() {
+  alert("✅ Sending with CoverX... feature coming soon!");
+}
