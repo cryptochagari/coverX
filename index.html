@@ -3,65 +3,122 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CoverX - Crypto Insurance</title>
-  <link rel="stylesheet" href="style.css">
+  <title>CoverX Dashboard</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom Styles -->
+  <style>
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .card {
+      background-color: #1f1f1f;
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+    }
+
+    .btn-primary {
+      background-color: #4e44ce;
+      border: none;
+    }
+
+    .btn-success {
+      background-color: #2ecc71;
+      border: none;
+    }
+
+    .header {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .wallet-address {
+      font-size: 0.9rem;
+      word-break: break-word;
+      margin-top: 10px;
+      color: #bbb;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>CoverX Insurance</h1>
-    <button id="connectWallet">Connect Wallet</button>
-    <div id="walletAddress"></div>
-    
-    <button id="sendButton">Send with CoverX</button>
-    <p id="status"></p>
+
+  <div class="container py-5">
+    <div class="text-center mb-4">
+      <h1 class="header">CoverX Crypto Insurance</h1>
+      <p class="lead">Protect your crypto instantly on every transaction.</p>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card p-4 text-center">
+          <h4>Connect Wallet to Continue</h4>
+          <button id="connectWallet" class="btn btn-primary mt-3">Connect Wallet</button>
+          <div id="walletInfo" class="wallet-address"></div>
+          <button id="sendCoverX" class="btn btn-success mt-4" style="display:none;">Send with CoverX</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Future dashboard area -->
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <div class="card p-4">
+          <h5>Insurance Pool Stats</h5>
+          <p>Total Covered: <strong>$XX,XXX</strong></p>
+          <p>Claims Processed: <strong>123</strong></p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card p-4">
+          <h5>Recent Activity</h5>
+          <ul class="list-unstyled">
+            <li>+ You insured a transfer to <code>0xabc...123</code></li>
+            <li>+ You received a claim refund of 0.03 ETH</li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 
+  <!-- Bootstrap JS + MetaMask Script -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    let userAccount;
-
     const connectWalletBtn = document.getElementById('connectWallet');
-    const walletDisplay = document.getElementById('walletAddress');
-    const sendButton = document.getElementById('sendButton');
-    const statusText = document.getElementById('status');
+    const walletInfo = document.getElementById('walletInfo');
+    const sendBtn = document.getElementById('sendCoverX');
 
-    async function connectWallet() {
-      if (window.ethereum) {
+    connectWalletBtn.addEventListener('click', async () => {
+      if (typeof window.ethereum !== 'undefined') {
         try {
-          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-          userAccount = accounts[0];
-          walletDisplay.innerText = `Wallet Connected: ${userAccount}`;
-          statusText.innerText = '';
-        } catch (err) {
-          statusText.innerText = 'Connection rejected.';
+          const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+          const address = accounts[0];
+          walletInfo.textContent = `Connected: ${address}`;
+          sendBtn.style.display = 'inline-block';
+
+          // TODO: Auto-register insurance logic goes here
+
+        } catch (error) {
+          walletInfo.textContent = 'Connection failed';
         }
       } else {
-        statusText.innerText = 'Please install MetaMask.';
+        alert('MetaMask not found. Please install it.');
       }
-    }
+    });
 
-    async function sendWithCoverX() {
-      if (!userAccount) {
-        statusText.innerText = 'Please connect your wallet first.';
-        return;
-      }
+    sendBtn.addEventListener('click', async () => {
+      alert("Triggering send + insurance logic...");
 
-      try {
-        const tx = await ethereum.request({
-          method: 'eth_sendTransaction',
-          params: [{
-            from: userAccount,
-            to: '0x1234567890abcdef1234567890abcdef12345678', // Change to your address
-            value: '0x2386F26FC10000' // 0.01 ETH in hex
-          }]
-        });
-        statusText.innerText = `Transaction sent! Hash: ${tx}`;
-      } catch (err) {
-        statusText.innerText = `Transaction failed: ${err.message}`;
-      }
-    }
+      // TODO: Replace with actual smart contract interaction
+      // e.g., sendWithInsurance(receiver, amount, { value: fee })
 
-    connectWalletBtn.onclick = connectWallet;
-    sendButton.onclick = sendWithCoverX;
+    });
   </script>
 </body>
 </html>
