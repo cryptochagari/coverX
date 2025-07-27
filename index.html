@@ -3,121 +3,123 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CoverX Dashboard</title>
-
-  <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Custom Styles -->
+  <title>CoverX Transfer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary-bg: #5e35b1;
+      --secondary-bg: #7e57c2;
+      --accent-color: #3949ab;
+      --text-color: #ffffff;
+      --muted-text: #d1c4e9;
+      --input-bg: rgba(255, 255, 255, 0.1);
+      --input-border: rgba(255, 255, 255, 0.2);
+      --button-bg: #3949ab;
+      --button-hover: #303f9f;
+    }
+
     body {
-      background-color: #121212;
-      color: #ffffff;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--primary-bg), var(--secondary-bg));
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
 
-    .card {
-      background-color: #1f1f1f;
-      border: none;
-      border-radius: 15px;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
     }
 
-    .btn-primary {
-      background-color: #4e44ce;
-      border: none;
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      text-align: center;
     }
 
-    .btn-success {
-      background-color: #2ecc71;
-      border: none;
-    }
-
-    .header {
-      font-size: 2rem;
+    label {
       font-weight: 600;
-      margin-bottom: 20px;
+      margin-top: 1rem;
+      display: block;
     }
 
-    .wallet-address {
-      font-size: 0.9rem;
-      word-break: break-word;
-      margin-top: 10px;
-      color: #bbb;
+    input {
+      width: 100%;
+      padding: 0.8rem;
+      margin-top: 0.3rem;
+      border-radius: 8px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text-color);
+      font-size: 1rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.9rem;
+      margin-top: 1.5rem;
+      border: none;
+      border-radius: 8px;
+      background-color: var(--button-bg);
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: var(--button-hover);
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Send with CoverX</h1>
+    <form id="coverxForm">
+      <label for="recipient">Recipient Wallet Address</label>
+      <input type="text" id="recipient" name="recipient" placeholder="0x123..." required />
 
-  <div class="container py-5">
-    <div class="text-center mb-4">
-      <h1 class="header">CoverX Crypto Insurance</h1>
-      <p class="lead">Protect your crypto instantly on every transaction.</p>
-    </div>
+      <label for="amount">Amount in ETH</label>
+      <input type="number" id="amount" name="amount" step="0.0001" placeholder="e.g. 0.05" required />
 
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="card p-4 text-center">
-          <h4>Connect Wallet to Continue</h4>
-          <button id="connectWallet" class="btn btn-primary mt-3">Connect Wallet</button>
-          <div id="walletInfo" class="wallet-address"></div>
-          <button id="sendCoverX" class="btn btn-success mt-4" style="display:none;">Send with CoverX</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Future dashboard area -->
-    <div class="row mt-5">
-      <div class="col-md-6">
-        <div class="card p-4">
-          <h5>Insurance Pool Stats</h5>
-          <p>Total Covered: <strong>$XX,XXX</strong></p>
-          <p>Claims Processed: <strong>123</strong></p>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card p-4">
-          <h5>Recent Activity</h5>
-          <ul class="list-unstyled">
-            <li>+ You insured a transfer to <code>0xabc...123</code></li>
-            <li>+ You received a claim refund of 0.03 ETH</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+      <button type="submit">Send with CoverX</button>
+    </form>
   </div>
 
-  <!-- Bootstrap JS + MetaMask Script -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    const connectWalletBtn = document.getElementById('connectWallet');
-    const walletInfo = document.getElementById('walletInfo');
-    const sendBtn = document.getElementById('sendCoverX');
+    const form = document.getElementById('coverxForm');
 
-    connectWalletBtn.addEventListener('click', async () => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const recipient = document.getElementById('recipient').value;
+      const amount = document.getElementById('amount').value;
+
       if (typeof window.ethereum !== 'undefined') {
         try {
-          const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-          const address = accounts[0];
-          walletInfo.textContent = `Connected: ${address}`;
-          sendBtn.style.display = 'inline-block';
-
-          // TODO: Auto-register insurance logic goes here
-
-        } catch (error) {
-          walletInfo.textContent = 'Connection failed';
+          const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const tx = {
+            from: account,
+            to: recipient,
+            value: (parseFloat(amount) * 1e18).toString(16) // in wei
+          };
+          await window.ethereum.request({ method: 'eth_sendTransaction', params: [tx] });
+          alert("Transaction sent with CoverX!");
+        } catch (err) {
+          alert("Transaction failed: " + err.message);
         }
       } else {
-        alert('MetaMask not found. Please install it.');
+        alert("MetaMask is not installed.");
       }
-    });
-
-    sendBtn.addEventListener('click', async () => {
-      alert("Triggering send + insurance logic...");
-
-      // TODO: Replace with actual smart contract interaction
-      // e.g., sendWithInsurance(receiver, amount, { value: fee })
-
     });
   </script>
 </body>
