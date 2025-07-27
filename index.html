@@ -3,116 +3,107 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CoverX - Crypto Sender</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <title>CoverX Insurance</title>
   <style>
-    :root {
-      --primary: #2d2a4a;
-      --secondary: #3e3c61;
-      --accent: #00d1b2;
-      --text: #ffffff;
-    }
-
     body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(to bottom right, var(--primary), var(--secondary));
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
       margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #1e1e2f, #2a2a4a);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
 
-    .card {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(12px);
-      border-radius: 20px;
+    .container {
+      background: #2e2e3e;
       padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
       width: 100%;
-      max-width: 420px;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      max-width: 400px;
     }
 
     h2 {
       text-align: center;
       margin-bottom: 1rem;
-      font-weight: 600;
+    }
+
+    label {
+      display: block;
+      margin: 0.5rem 0 0.2rem;
     }
 
     input, select, button {
       width: 100%;
-      padding: 0.8rem;
+      padding: 0.7rem;
       margin-bottom: 1rem;
       border: none;
-      border-radius: 12px;
+      border-radius: 8px;
       font-size: 1rem;
     }
 
     input, select {
-      background-color: rgba(255, 255, 255, 0.1);
-      color: var(--text);
-    }
-
-    input::placeholder {
-      color: #cccccc;
+      background: #444;
+      color: #fff;
     }
 
     button {
-      background-color: var(--accent);
-      color: #000;
-      font-weight: bold;
+      background: #00d084;
+      color: #fff;
       cursor: pointer;
-      transition: background-color 0.2s ease-in-out;
+      transition: background 0.3s;
     }
 
     button:hover {
-      background-color: #00bfa5;
+      background: #00a96e;
     }
 
-    .wallet-status {
-      font-size: 0.9rem;
+    #status {
+      margin-top: 0.5rem;
       text-align: center;
-      margin-bottom: 1rem;
-      color: #b2b2ff;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h2>Send Crypto</h2>
+  <div class="container">
+    <h2>CoverX Insurance</h2>
+    <button id="connectBtn">Connect Wallet</button>
+    <label for="recipient">Recipient Address</label>
+    <input type="text" id="recipient" placeholder="0x...">
 
-    <div class="wallet-status" id="walletStatus">Wallet not connected</div>
+    <label for="amount">Amount</label>
+    <input type="number" id="amount" placeholder="Enter amount">
 
-    <button onclick="connectWallet()">Connect Wallet</button>
-
-    <input type="text" id="recipient" placeholder="Recipient Address" />
-    <input type="number" id="amount" placeholder="Amount" />
-    
+    <label for="token">Token</label>
     <select id="token">
-      <option value="ETH">Ethereum (ETH)</option>
-      <option value="USDT">Tether (USDT)</option>
-      <option value="DAI">Dai (DAI)</option>
-      <option value="MATIC">Polygon (MATIC)</option>
+      <option value="ETH">ETH</option>
+      <option value="USDT">USDT</option>
+      <option value="DAI">DAI</option>
     </select>
 
-    <button onclick="sendCrypto()">Send Crypto</button>
+    <button id="sendBtn">Send with Insurance</button>
+    <div id="status"></div>
   </div>
 
   <script>
-    let currentAccount = null;
+    let userAccount;
 
     async function connectWallet() {
       if (window.ethereum) {
         try {
-          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-          currentAccount = accounts[0];
-          document.getElementById('walletStatus').textContent = `Connected: ${currentAccount.slice(0, 6)}...${currentAccount.slice(-4)}`;
+          const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+          userAccount = accounts[0];
+          document.getElementById('connectBtn').innerText = 'Connected';
+          document.getElementById('status').innerText = 'Wallet connected: ' + userAccount;
         } catch (err) {
-          alert('Wallet connection failed');
+          document.getElementById('status').innerText = 'Connection failed';
         }
       } else {
-        alert('MetaMask not detected. Please install it.');
+        alert("Please install MetaMask!");
       }
     }
 
@@ -121,30 +112,36 @@
       const amount = document.getElementById('amount').value;
       const token = document.getElementById('token').value;
 
-      if (!currentAccount) return alert("Please connect your wallet first.");
-      if (!recipient || !amount) return alert("Fill all fields.");
+      if (!window.ethereum || !userAccount) {
+        document.getElementById('status').innerText = 'Please connect wallet first.';
+        return;
+      }
 
-      const valueInWei = (amount * 1e18).toString();
+      if (!recipient || !amount) {
+        document.getElementById('status').innerText = 'Enter all fields.';
+        return;
+      }
 
       try {
-        if (token === 'ETH') {
-          await window.ethereum.request({
-            method: 'eth_sendTransaction',
-            params: [{
-              from: currentAccount,
-              to: recipient,
-              value: valueInWei
-            }]
-          });
-          alert('Transaction Sent!');
-        } else {
-          alert(`Sending ${token} is not yet supported in this demo`);
-          // For real implementation, you'd need the token contract ABI and use Web3.js or Ethers.js
-        }
+        const valueInWei = (BigInt(Math.floor(amount * 1e18))).toString();
+
+        const tx = await ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: userAccount,
+            to: recipient,
+            value: token === "ETH" ? valueInWei : "0x0", // only real ETH is sent here
+          }],
+        });
+
+        document.getElementById('status').innerText = `Transaction sent: ${tx}`;
       } catch (err) {
-        alert('Transaction failed: ' + err.message);
+        document.getElementById('status').innerText = 'Transaction failed';
       }
     }
+
+    document.getElementById('connectBtn').addEventListener('click', connectWallet);
+    document.getElementById('sendBtn').addEventListener('click', sendCrypto);
   </script>
 </body>
 </html>
