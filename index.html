@@ -2,65 +2,92 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CoverX Wallet</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CoverX DApp</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-bg: #5e35b1;
+      --secondary-bg: #7e57c2;
+      --accent-color: #3949ab;
+      --text-color: #ffffff;
+      --muted-text: #d1c4e9;
+      --chart-color-1: #9575cd;
+      --chart-color-2: #7986cb;
+      --positive-color: #4caf50;
+      --negative-color: #f44336;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--primary-bg), var(--secondary-bg));
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    button {
+      background-color: var(--accent-color);
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+
+    button:hover {
+      background-color: #303f9f;
+    }
+
+    #wallet-address {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: var(--muted-text);
+    }
+  </style>
 </head>
-
-<body class="bg-gradient-to-br from-purple-900 to-indigo-900 text-white font-inter min-h-screen">
-  <div class="container mx-auto p-4">
-    <header class="flex justify-between items-center mb-8">
-      <h1 class="text-2xl font-bold">CoverX</h1>
-      <nav>
-        <ul class="flex space-x-4">
-          <li><a href="#" class="nav-link active" data-page="dashboard">Dashboard</a></li>
-          <li><a href="#" class="nav-link" data-page="swap">Swap</a></li>
-          <li><a href="#" class="nav-link" data-page="markets">Markets</a></li>
-          <li><a href="#" class="nav-link" data-page="wallet">Wallet</a></li>
-          <li><a href="#" class="nav-link" data-page="settings">Settings</a></li>
-        </ul>
-      </nav>
-      <button id="connectWalletBtn" class="connect-wallet-btn bg-indigo-600 px-4 py-2 rounded hover:bg-indigo-700 transition-all">
-        Connect Wallet
-      </button>
-    </header>
-
-    <main id="main-content">
-      <section id="dashboard-page" class="page-content">
-        <div class="bg-white bg-opacity-10 p-6 rounded-lg shadow-md">
-          <h2 class="text-xl font-semibold mb-4">Welcome to CoverX</h2>
-          <p>This is your decentralized insurance dashboard. Use the menu to explore swap, markets, or connect your wallet.</p>
-        </div>
-      </section>
-    </main>
+<body>
+  <div class="glass-card">
+    <h2>Welcome to CoverX</h2>
+    <p>Connect your wallet to register and get insured automatically.</p>
+    <button onclick="connectWallet()">Connect Wallet</button>
+    <div id="wallet-address"></div>
   </div>
 
   <script>
-    const connectWalletBtn = document.getElementById('connectWalletBtn');
-
     async function connectWallet() {
-      if (typeof window.ethereum !== 'undefined') {
-        try {
-          const provider = new ethers.providers.Web3Provider(window.ethereum);
-          await provider.send("eth_requestAccounts", []);
-          const signer = provider.getSigner();
-          const address = await signer.getAddress();
-          connectWalletBtn.innerText = `Connected: ${address.slice(0, 6)}...${address.slice(-4)}`;
-        } catch (err) {
-          alert('Connection rejected.');
-          console.error(err);
-        }
-      } else {
-        alert("Please install MetaMask.");
-        window.open('https://metamask.io/download.html');
+      if (typeof window.ethereum === 'undefined') {
+        alert("MetaMask not detected. Please install MetaMask.");
+        return;
+      }
+
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const address = accounts[0];
+        document.getElementById('wallet-address').innerText = 'Wallet Connected: ' + address;
+        // Optional: Auto-register logic can go here
+      } catch (error) {
+        console.error(error);
+        alert("Failed to connect wallet.");
       }
     }
-
-    connectWalletBtn.addEventListener('click', connectWallet);
   </script>
 </body>
 </html>
