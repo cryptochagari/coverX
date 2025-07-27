@@ -1,58 +1,52 @@
-let web3;
-let contract;
-let account;
+let userAccount;
 
-const contractAddress = "PASTE_YOUR_DEPLOYED_CONTRACT_ADDRESS_HERE";
-let abi = [];
+const connectBtn = document.getElementById('connectBtn');
+const walletAddressDisplay = document.getElementById('walletAddress');
+const insuranceForm = document.getElementById('insuranceForm');
+const status = document.getElementById('status');
 
-window.addEventListener("load", async () => {
-  const res = await fetch("abi.json");
-  abi = await res.json();
-
-  if (window.ethereum) {
-    web3 = new Web3(window.ethereum);
-    contract = new web3.eth.Contract(abi, contractAddress);
+connectBtn.onclick = async () => {
+  if (typeof window.ethereum !== 'undefined') {
+    try {
+      const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+      userAccount = accounts[0];
+      walletAddressDisplay.innerText = `Connected: ${userAccount}`;
+      await registerWallet(userAccount);
+    } catch (error) {
+      status.innerText = 'Connection failed.';
+    }
   } else {
-    alert("Please install MetaMask");
+    alert('Please install MetaMask.');
   }
+};
 
-  document.getElementById("connectButton").onclick = connectWallet;
-  document.getElementById("registerButton").onclick = register;
-  document.getElementById("sendButton").onclick = sendInsured;
-});
+insuranceForm.onsubmit = async (e) => {
+  e.preventDefault();
 
-async function connectWallet() {
-  const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-  account = accounts[0];
-  document.getElementById("walletAddress").innerText = `Connected: ${account}`;
-}
+  const recipient = document.getElementById('receiver').value;
+  const amountEth = parseFloat(document.getElementById('amount').value);
+  const insuranceFee = amountEth * 0.02; // 2% insurance fee
+  const totalAmount = amountEth + insuranceFee;
 
-async function register() {
-  try {
-    await contract.methods.register().send({ from: account });
-    alert("Registered successfully!");
-  } catch (err) {
-    console.error(err);
-    alert("Already registered or error occurred");
-  }
-}
-
-async function sendInsured() {
-  const recipient = document.getElementById("recipient").value;
-  const amount = document.getElementById("amount").value;
-
-  if (!recipient || !amount) return alert("Please fill all fields");
-
-  const weiAmount = web3.utils.toWei(amount, "ether");
+  status.innerText = `Sending ${totalAmount} ETH (includes 2% insurance) to ${recipient}...`;
 
   try {
-    await contract.methods.insuredTransfer(recipient).send({
-      from: account,
-      value: weiAmount
+    const tx = await ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [{
+        from: userAccount,
+        to: recipient,
+        value: (totalAmount * 1e18).toString(16)
+      }]
     });
-    alert("Transfer complete with CoverX insurance!");
+
+    status.innerText = `Transaction sent! Hash: ${tx}`;
   } catch (err) {
-    console.error(err);
-    alert("Transfer failed");
+    status.innerText = 'Transaction failed.';
   }
+};
+
+async function registerWallet(wallet) {
+  console.log(`Auto-registering wallet: ${wallet}`);
+  // In production: store wallet in backend smart contract or database
 }
