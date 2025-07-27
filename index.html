@@ -3,47 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CoverX Crypto Insurance</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>CoverX Insurance</title>
+  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+  <script defer src="script.js"></script>
 </head>
 <body>
-  <header>
-    <h1>CoverX</h1>
-    <p>Decentralized Crypto Insurance for Wallets & Transactions</p>
-  </header>
+  <h1>CoverX Crypto Insurance</h1>
 
-  <main>
-    <section class="connect-wallet">
-      <button id="connectWallet">Connect Wallet</button>
-      <div id="walletStatus"></div>
-    </section>
+  <button id="connectButton">Connect Wallet</button>
+  <p id="walletAddress"></p>
 
-    <section class="insurance-options">
-      <h2>Get Insurance</h2>
-      <form id="insuranceForm">
-        <label for="walletAddress">Wallet Address:</label>
-        <input type="text" id="walletAddress" required />
+  <button id="registerButton">Register as CoverX Member</button>
 
-        <label for="coverageType">Coverage Type:</label>
-        <select id="coverageType">
-          <option value="wallet">Wallet</option>
-          <option value="transaction">Transaction</option>
-          <option value="p2p">P2P Deal</option>
-        </select>
+  <h3>Send Insured Crypto</h3>
+  <input type="text" id="recipient" placeholder="Recipient Address" />
+  <input type="number" id="amount" placeholder="Amount in ETH" />
+  <button id="sendButton">Send with Insurance</button>
 
-        <label for="amount">Coverage Amount (USDT):</label>
-        <input type="number" id="amount" required />
-
-        <button type="submit">Submit & Pay</button>
-      </form>
-      <div id="formMessage"></div>
-    </section>
-  </main>
-
-  <footer>
-    <p>&copy; 2025 CoverX. Insure your crypto with confidence.</p>
-  </footer>
-
-  <script src="app.js"></script>
+  <p id="status"></p>
 </body>
 </html>
