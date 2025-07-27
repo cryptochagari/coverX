@@ -1,40 +1,37 @@
-async function connectWallet() {
+const connectWalletBtn = document.getElementById('connectWallet');
+const walletStatus = document.getElementById('walletStatus');
+const insuranceForm = document.getElementById('insuranceForm');
+const formMessage = document.getElementById('formMessage');
+
+let userAccount = null;
+
+connectWalletBtn.addEventListener('click', async () => {
   if (window.ethereum) {
     try {
-      const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-      alert(`Wallet connected: ${accounts[0]}`);
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      userAccount = accounts[0];
+      walletStatus.innerText = `Connected: ${userAccount}`;
     } catch (error) {
-      console.error("Connection Error:", error);
+      walletStatus.innerText = 'Connection rejected.';
     }
   } else {
-    alert("MetaMask not detected");
+    walletStatus.innerText = 'Please install MetaMask.';
   }
-}
+});
 
-function registerInsurance() {
-  const wallet = document.getElementById('walletAddress').value;
-  if (wallet) {
-    alert(`Insurance registered for wallet: ${wallet}`);
-    // Simulate storing to blockchain or database
-  } else {
-    alert("Please enter your wallet address.");
+insuranceForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!userAccount) {
+    formMessage.innerText = 'Please connect your wallet first.';
+    return;
   }
-}
 
-function checkClaimStatus() {
-  const code = document.getElementById('claimCode').value;
-  const result = document.getElementById('statusResult');
+  const walletAddress = document.getElementById('walletAddress').value;
+  const coverageType = document.getElementById('coverageType').value;
+  const amount = document.getElementById('amount').value;
 
-  if (code === "ABC123") {
-    result.innerText = "✅ Approved and Paid";
-    result.style.color = "lightgreen";
-  } else if (code === "PENDING") {
-    result.innerText = "🕒 Pending Review";
-    result.style.color = "orange";
-  } else {
-    result.innerText = "❌ Invalid Claim Code";
-    result.style.color = "red";
-  }
-}
+  // Simulated fee deduction
+  formMessage.innerText = `Insurance submitted for ${coverageType} on ${walletAddress} for $${amount}. (Mock transaction)`;
 
-document.getElementById('connectBtn').addEventListener('click', connectWallet);
+  // TODO: Replace with real smart contract interaction or backend call
+});
