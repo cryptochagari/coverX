@@ -3,70 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CoverX Wallet Protection</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary-bg: #5e35b1;
-      --secondary-bg: #7e57c2;
-      --accent-color: #3949ab;
-      --text-color: #ffffff;
-      --muted-text: #d1c4e9;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, var(--primary-bg), var(--secondary-bg));
-      color: var(--text-color);
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-
-    .glass-card {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      padding: 2rem;
-      border-radius: 20px;
-      max-width: 400px;
-      text-align: center;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    }
-
-    button {
-      background: var(--accent-color);
-      color: white;
-      border: none;
-      padding: 1rem 2rem;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 1rem;
-    }
-
-    button:hover {
-      background: #5c6bc0;
-    }
-
-    #walletAddress {
-      font-size: 0.9rem;
-      margin-top: 1rem;
-      word-break: break-word;
-      color: var(--muted-text);
-    }
-
-    #status {
-      margin-top: 1rem;
-    }
-  </style>
+  <title>CoverX Protection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js" defer></script>
 </head>
 <body>
   <div class="glass-card">
     <h2>CoverX Protection</h2>
-    <p>Connect your wallet to activate protection.</p>
+    <p>Connect your wallet to secure your transaction.</p>
     <button id="connectButton">Connect Wallet</button>
     <div id="walletAddress"></div>
     <button id="sendButton" style="display:none;">Send with CoverX</button>
@@ -74,34 +19,27 @@
   </div>
 
   <script>
-    let userAddress;
+    let userAddr;
 
     async function connectWallet() {
-      if (typeof window.ethereum !== 'undefined') {
-        try {
-          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-          userAddress = accounts[0];
-          document.getElementById('walletAddress').textContent = `Wallet: ${userAddress}`;
-          document.getElementById('status').textContent = '✅ Wallet connected and registered!';
-          document.getElementById('sendButton').style.display = 'inline-block';
-          // Simulate registration here
-          console.log("Wallet registered:", userAddress);
-        } catch (err) {
-          console.error(err);
-          document.getElementById('status').textContent = '❌ Failed to connect.';
-        }
-      } else {
-        alert("🦊 Please install MetaMask to continue.");
+      if (!window.ethereum) {
+        alert('MetaMask not found.');
+        return;
+      }
+      try {
+        const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+        userAddr = accounts[0];
+        document.getElementById('walletAddress').textContent = `Connected: ${userAddr}`;
+        document.getElementById('status').textContent = '✅ Registered with CoverX';
+        document.getElementById('sendButton').style.display = 'block';
+      } catch {
+        document.getElementById('status').textContent = '❌ Connection canceled.';
       }
     }
 
     document.getElementById('connectButton').addEventListener('click', connectWallet);
     document.getElementById('sendButton').addEventListener('click', () => {
-      if (!userAddress) {
-        alert("Connect your wallet first.");
-        return;
-      }
-      document.getElementById('status').textContent = "✅ Transaction sent with CoverX (simulated).";
+      document.getElementById('status').textContent = '✅ Transaction sent with insurance (simulated).';
     });
   </script>
 </body>
