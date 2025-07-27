@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CoverX DApp</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+  <title>CoverX Wallet Protection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary-bg: #5e35b1;
@@ -12,10 +12,6 @@
       --accent-color: #3949ab;
       --text-color: #ffffff;
       --muted-text: #d1c4e9;
-      --chart-color-1: #9575cd;
-      --chart-color-2: #7986cb;
-      --positive-color: #4caf50;
-      --negative-color: #f44336;
     }
 
     body {
@@ -24,70 +20,89 @@
       color: var(--text-color);
       margin: 0;
       padding: 0;
-      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
+      min-height: 100vh;
     }
 
     .glass-card {
       background: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(10px);
-      border-radius: 20px;
       padding: 2rem;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-      text-align: center;
+      border-radius: 20px;
       max-width: 400px;
-      width: 90%;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     }
 
     button {
-      background-color: var(--accent-color);
+      background: var(--accent-color);
       color: white;
-      padding: 10px 20px;
       border: none;
+      padding: 1rem 2rem;
       border-radius: 8px;
+      font-weight: bold;
       cursor: pointer;
-      font-size: 1rem;
       margin-top: 1rem;
     }
 
     button:hover {
-      background-color: #303f9f;
+      background: #5c6bc0;
     }
 
-    #wallet-address {
-      margin-top: 1rem;
+    #walletAddress {
       font-size: 0.9rem;
+      margin-top: 1rem;
+      word-break: break-word;
       color: var(--muted-text);
+    }
+
+    #status {
+      margin-top: 1rem;
     }
   </style>
 </head>
 <body>
   <div class="glass-card">
-    <h2>Welcome to CoverX</h2>
-    <p>Connect your wallet to register and get insured automatically.</p>
-    <button onclick="connectWallet()">Connect Wallet</button>
-    <div id="wallet-address"></div>
+    <h2>CoverX Protection</h2>
+    <p>Connect your wallet to activate protection.</p>
+    <button id="connectButton">Connect Wallet</button>
+    <div id="walletAddress"></div>
+    <button id="sendButton" style="display:none;">Send with CoverX</button>
+    <div id="status"></div>
   </div>
 
   <script>
-    async function connectWallet() {
-      if (typeof window.ethereum === 'undefined') {
-        alert("MetaMask not detected. Please install MetaMask.");
-        return;
-      }
+    let userAddress;
 
-      try {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        const address = accounts[0];
-        document.getElementById('wallet-address').innerText = 'Wallet Connected: ' + address;
-        // Optional: Auto-register logic can go here
-      } catch (error) {
-        console.error(error);
-        alert("Failed to connect wallet.");
+    async function connectWallet() {
+      if (typeof window.ethereum !== 'undefined') {
+        try {
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          userAddress = accounts[0];
+          document.getElementById('walletAddress').textContent = `Wallet: ${userAddress}`;
+          document.getElementById('status').textContent = '✅ Wallet connected and registered!';
+          document.getElementById('sendButton').style.display = 'inline-block';
+          // Simulate registration here
+          console.log("Wallet registered:", userAddress);
+        } catch (err) {
+          console.error(err);
+          document.getElementById('status').textContent = '❌ Failed to connect.';
+        }
+      } else {
+        alert("🦊 Please install MetaMask to continue.");
       }
     }
+
+    document.getElementById('connectButton').addEventListener('click', connectWallet);
+    document.getElementById('sendButton').addEventListener('click', () => {
+      if (!userAddress) {
+        alert("Connect your wallet first.");
+        return;
+      }
+      document.getElementById('status').textContent = "✅ Transaction sent with CoverX (simulated).";
+    });
   </script>
 </body>
 </html>
