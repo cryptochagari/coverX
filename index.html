@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CoverX Insurance DApp</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>CoverX Insurance</h1>
+    <button id="connectBtn">Connect Wallet</button>
+    
+    <div class="section">
+      <h2>Register Insurance</h2>
+      <input type="text" id="walletAddress" placeholder="Enter your wallet address">
+      <button onclick="registerInsurance()">Register</button>
+    </div>
+
+    <div class="section">
+      <h2>Claim Status</h2>
+      <input type="text" id="claimCode" placeholder="Enter claim code">
+      <button onclick="checkClaimStatus()">Check Status</button>
+      <div id="statusResult"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
